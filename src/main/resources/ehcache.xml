@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache >
+    <diskStore path="java.io.tmpdir" />
+
+
+    <cache
+            name="member"
+            maxElementInMoney="10000"
+            overflowToDisk="false"
+            eternal="false"
+            memoryStoreEvictionPolicy="LRU"
+            timeToTdleSeconds="300"
+            timeToLiveSecond="300">
+    </cache>
+
+</ehcache>
