@@ -9,14 +9,15 @@
 <!--        limit 1-->
 <!--    </select>-->
 
-    <select id="selectMember" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    <select id="web" parameterType="java.util.HashMap" resultType="java.util.HashMap">
         select USERID,PCODE,PNM,IMGPATH from dreamsearch.SHOP_DATA
         where userid = #{userid} and pcode LIKE CONCAT ('%',#{pcode},'%');
     </select>
 
-<!--    <select id="selectMember" parameterType="String" resultType="java.util.HashMap">-->
-<!--        select USERID,PCODE,PNM,IMGPATH from dreamsearch.SHOP_DATA-->
-<!--        where userid = #{userid} and pcode = #{pcode};-->
-<!--    </select>-->
+    <select id="mobile" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select USERID,PCODE,PNM,IMGPATH from dreamsearch.MOB_SHOP_DATA
+        where userid = #{userid} and pcode LIKE CONCAT ('%',#{pcode},'%');
+    </select>
+
 
 </mapper>

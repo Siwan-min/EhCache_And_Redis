@@ -19,14 +19,23 @@ public class CommonDAO {
     private SqlSession sqlSession;
 
    @Cacheable(cacheNames = "member", key = "{#userid,#number}", unless = "#result == null")
-    public String selectTest(String userid, String number) {
+    public String selectTest(String option, String userid, String number) {
+
+       //데이터 테이블 선택
+       String dataTable;
+       if(option.equals("web")){
+           dataTable = "web";
+       }
+       else{
+           dataTable = "mobile";
+       }
 
         try{
 
             Map<String, String> param = new HashMap<>();
             param.put("userid", userid);
             param.put("pcode", number);
-            List<Object> result = sqlSession.selectList("selectMember", param);
+            List<Object> result = sqlSession.selectList(dataTable, param);
             return result.toString();
         }
         catch (Exception e){

@@ -2,7 +2,6 @@
 <ehcache >
     <diskStore path="java.io.tmpdir" />
 
-
     <cache
             name="member"
             maxElementInMoney="10000"

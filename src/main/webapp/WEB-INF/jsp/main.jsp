@@ -1,17 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
-
+<title>MOBON SHOP DATA</title>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <head>
     <style type="text/css">
         body {
-            background: #E5E7E9   !important;
+            background: #E5E7E9 !important;
         }
+
         .card {
             border: 1px solid #28a745;
         }
+
         .card-login {
             margin-top: 130px;
             padding: 18px;
@@ -28,23 +30,23 @@
             border-bottom: 0;
         }
 
-        .input-group-prepend span{
+        .input-group-prepend span {
             width: 50px;
             background-color: #BDC3C7;
             color: #fff;
-            border:0 !important;
+            border: 0 !important;
         }
 
-        input:focus{
-            outline: 0 0 0 0  !important;
+        input:focus {
+            /*outline: 0 0 0 0  !important;*/
             box-shadow: 0 0 0 0 !important;
         }
 
-        .login_btn{
+        .login_btn {
             width: 130px;
         }
 
-        .login_btn:hover{
+        .login_btn:hover {
             color: #fff;
             background-color: #ff0000;
         }
@@ -123,33 +125,47 @@
         </div>
         <div class="card-body">
             <form method="get" action="product">
+
+                <div class="input-group form-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-list-ul"></i></span>
+                    </div>
+                    <select type="option" id="option" name="option" class="form-control">
+                        <option value="none">=== 선택 ===</option>
+                        <option value="web" selected>WEB</option>
+                        <option value="mobile">MOBILE</option>
+                    </select>
+                </div>
+
                 <div class="input-group form-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                     </div>
-                    <input type="userid" id="userid" name="userid" class="form-control" placeholder="User ID" value="${userid}">
+                    <input type="userid" id="userid" name="userid" class="form-control" placeholder="User ID"
+                           value="${userid}">
                 </div>
 
                 <div class="input-group form-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-key"></i></span>
                     </div>
-                    <input type="pcode" id="pcode" name="pcode" class="form-control" placeholder="Product Code" value="${pcode}">
+                    <input type="pcode" id="pcode" name="pcode" class="form-control" placeholder="Product Code"
+                           value="${pcode}">
                 </div>
-
                 <div class="form-group">
                     <input type="submit" name="btn" value="Search" class="btn btn-outline-danger float-right login_btn">
                 </div>
 
-<%--                <div class="form-group">--%>
-<%--                    <input type="submit" name="btn" value="Reset" class="btn btn-outline-danger float-right login_btn">--%>
-<%--                </div>--%>
+                <%--                <div class="form-group">--%>
+                <%--                    <input type="submit" name="btn" value="Reset" class="btn btn-outline-danger float-right login_btn">--%>
+                <%--                </div>--%>
             </form>
 
-<%--                캐시 리셋 버튼--%>
-                <div class="form-group">
-                    <input type="submit" id="resetBtn" name="btn" value="Reset" class="btn btn-outline-danger float-right login_btn">
-                </div>
+            <%--                캐시 리셋 버튼--%>
+            <div class="form-group">
+                <input type="submit" id="resetBtn" name="btn" value="Reset"
+                       class="btn btn-outline-danger float-right login_btn">
+            </div>
 
         </div>
     </div>
