@@ -18,8 +18,8 @@ public class CommonDAO {
     @Autowired
     private SqlSession sqlSession;
 
-   @Cacheable(cacheNames = "member", key = "{#userid,#number}", unless = "#result == null")
-    public String selectTest(String option, String userid, String number) {
+   @Cacheable(cacheNames = "member", key = "{#userid,#pcode}", unless = "#result == null")
+    public String selectTest(String option, String userid, String pcode) {
 
        //데이터 테이블 선택
        String dataTable;
@@ -34,8 +34,12 @@ public class CommonDAO {
 
             Map<String, String> param = new HashMap<>();
             param.put("userid", userid);
-            param.put("pcode", number);
+            param.put("pcode", pcode);
             List<Object> result = sqlSession.selectList(dataTable, param);
+//            for(Object ob : result){
+//                System.out.println(ob);
+//            }
+//            System.out.println(result.get(1));
             return result.toString();
         }
         catch (Exception e){
