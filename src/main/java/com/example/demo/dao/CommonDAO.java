@@ -1,6 +1,9 @@
 package com.example.demo.dao;
 
+import com.example.demo.controller.ProductController;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -10,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Component
 @EnableCaching
 public class CommonDAO {
@@ -18,17 +20,14 @@ public class CommonDAO {
     @Autowired
     private SqlSession sqlSession;
 
-   @Cacheable(cacheNames = "member", key = "{#userid,#pcode}", unless = "#result == null")
+    private final static Logger log = LoggerFactory.getLogger(ProductController.class);
+
+    @Cacheable(cacheNames = "member", key = "{#userid,#pcode}", unless = "#result == null")
     public String selectTest(String option, String userid, String pcode) {
 
-       //데이터 테이블 선택
-       String dataTable;
-       if(option.equals("web")){
-           dataTable = "web";
-       }
-       else{
-           dataTable = "mobile";
-       }
+        //데이터 테이블 선택
+        String dataTable;
+        dataTable = selectTable(option);
 
         try{
 
@@ -36,16 +35,25 @@ public class CommonDAO {
             param.put("userid", userid);
             param.put("pcode", pcode);
             List<Object> result = sqlSession.selectList(dataTable, param);
-//            for(Object ob : result){
-//                System.out.println(ob);
-//            }
-//            System.out.println(result.get(1));
+
             return result.toString();
         }
         catch (Exception e){
-            System.out.println(e);
+            log.info(e.toString());
             return "Error!!!";
         }
 
     }
+
+    public String selectTable(String option){
+        String str;
+        if(option.equals("web")){
+            str = "web";
+        }
+        else{
+            str = "mobile";
+        }
+        return str;
+    }
+
 }

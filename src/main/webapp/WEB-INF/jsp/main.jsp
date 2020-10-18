@@ -9,17 +9,14 @@
         body {
             background: #E5E7E9 !important;
         }
-
         .card {
             border: 1px solid #28a745;
         }
-
         .card-login {
             margin-top: 130px;
             padding: 18px;
             max-width: 30rem;
         }
-
         .card-header {
             color: #fff;
             /*background: #ff0000;*/
@@ -29,28 +26,23 @@
             margin-top: 10px;
             border-bottom: 0;
         }
-
         .input-group-prepend span {
             width: 50px;
             background-color: #BDC3C7;
             color: #fff;
             border: 0 !important;
         }
-
         input:focus {
             /*outline: 0 0 0 0  !important;*/
             box-shadow: 0 0 0 0 !important;
         }
-
         .login_btn {
             width: 130px;
         }
-
         .login_btn:hover {
             color: #fff;
             background-color: #ff0000;
         }
-
         .btn-outline-danger {
             color: #fff;
             font-size: 18px;
@@ -59,7 +51,6 @@
             border-color: #28a745;
             margin-left: 15px;
         }
-
         .form-control {
             display: block;
             width: 100%;
@@ -74,7 +65,6 @@
             border-radius: 0;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
-
         .input-group-text {
             display: -ms-flexbox;
             display: flex;
@@ -96,13 +86,11 @@
 
     <script type="text/javascript">
         $(document).on('click', '#resetBtn', function (e) {
-
             $.ajax({
                 url: '/',
                 type: 'GET',
                 success: function (data) {
                     alert("캐시를 삭제했습니다");
-
                 },
                 error: function () {
                     alert("실패");

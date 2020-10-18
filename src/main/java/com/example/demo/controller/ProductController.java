@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.ArrayList;
 
@@ -29,14 +28,13 @@ public class ProductController {
 
     Cache cache;
 
-    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
     JedisPool jedisPool = new JedisPool();
     Jedis jedis = jedisPool.getResource();
 
+    //메인 화면 mapping
     @RequestMapping("/main")
     public ModelAndView login(ModelAndView mv){
         mv.setViewName("main.jsp");
-
         return mv;
     }
 
@@ -54,62 +52,77 @@ public class ProductController {
         //return "redirect:/";
     }
 
+    //option: web or mobile
+    @GetMapping(value = "product", produces = "application/json")
+    @ResponseBody
+    public ModelAndView getProduct(@RequestParam(value = "option") String option,
+                                   @RequestParam(value = "userid") String userid,
+                                   @RequestParam(value = "pcode") String pcode,
+                                   ModelAndView mv) {
+        // Model and View
+        mv.setViewName("result.jsp");
 
-
-   // @RequestMapping(value = "/product/{userid}/{pcode}", method = RequestMethod.GET) //요청 url에 대한 메소드 Mapping
-   @GetMapping(value = "product", produces = "application/json")
-   @ResponseBody
-   public ModelAndView getProduct(@RequestParam(value = "option") String option, @RequestParam(value = "userid") String userid, @RequestParam(value = "pcode") String pcode, ModelAndView mv) {
-        mv.setViewName("index.jsp");
-        String result;
-       // System.out.println(option);
+        // Get EhCache Data from member
         cache = cacheManager.getCache("member");
 
+        // 파라미터를 저장하기 위한 리스트
         ArrayList<String> param = new ArrayList<>();
 
         //Add Key
         param.add(userid);
         param.add(pcode);
 
-        // System.out.println(param);
-
-        boolean flag = false;
-        //   cache.put(userid +"," +pcode , cache);
-
         long start = System.currentTimeMillis(); //수행시간 측정 시작
 
-        Cache.ValueWrapper eh = cache.get(param);
+        Cache.ValueWrapper ehData = cache.get(param); // Get Parameter value
 
-        if (eh != null) {
-            result = eh.get().toString();
+        if (isData(ehData)) { // To check whether the value is null or not
+            String ehResult;
+            ehResult = ehData.get().toString(); // Convert ehData to String
             long ehCacheEnd = System.currentTimeMillis(); // 수행시간 측정 끝
-
             log.info("EhCache 조회: User ID: " + userid + " | Product Code: " + pcode + " | 수행시간: " + (ehCacheEnd - start) + "ms");
-
-            mv.addObject("EhCache", result);
-            mv.addObject("Execution_time", (ehCacheEnd - start));
+            mv = AddMvData(mv,"EhCache", ehResult, ehCacheEnd-start);
             return mv;
         }
 
-        result = jedis.get("member::" + userid + "," + pcode);
-        if (result != null) {
-            long redisEnd = System.currentTimeMillis(); // 수행시간 측정 끝
+        //Redis 조회
+        String redisData;
+        redisData = jedis.get("member::" + userid + "," + pcode);
+        if (isData(redisData)) {
+            long redisEnd = System.currentTimeMillis(); //레디스 수행시간 측정 끝
             log.info("Redis 조회: User ID: " + userid + " | Product Code: " + pcode + " | 수행시간: " + (redisEnd - start) + "ms");
-            cache.put(param, result);
-            mv.addObject("Redis", result);
-            mv.addObject("Execution_time", (redisEnd - start));
-            return mv;
-        } else {
-            //db 조회
-            result = dao.selectTest(option,userid, pcode);
-            long dbEnd = System.currentTimeMillis(); // db 수행시간 측정 끝
-            jedis.set("member::" + userid + "," + pcode, result);
-            log.info("DB 조회: User ID: " + userid + "" + " | Product Code: " + pcode + " | 수행시간: " + (dbEnd - start) + "ms");
-            cache.put(param, result);
-            mv.addObject("DB", result);
-            mv.addObject("Execution_time", (dbEnd - start));
+            cache.put(param, redisData);
+            mv = AddMvData(mv,"Redis", redisData, redisEnd-start);
             return mv;
         }
-        //return null;
+        else { //db 조회
+            String dbResult;
+            dbResult = dao.selectTest(option,userid, pcode);
+            long dbEnd = System.currentTimeMillis(); // db 수행시간 측정 끝
+            jedis.set("member::" + userid + "," + pcode, dbResult); // Update Data on Redis
+            log.info("DB 조회: User ID: " + userid + "" + " | Product Code: " + pcode + " | 수행시간: " + (dbEnd - start) + "ms");
+            cache.put(param, dbResult); // Updata Data on EhCache
+            mv = AddMvData(mv,"DB", dbResult, dbEnd-start);
+            return mv;
+        }
     }
+
+    // Add Object Data with Model And View
+    public ModelAndView AddMvData(ModelAndView mv, String DataStorage, String DataResult, long ExecutionTime){
+        mv.setViewName("result.jsp");
+
+        mv.addObject(DataStorage, DataResult);
+        mv.addObject("Execution_time", ExecutionTime);
+        return mv;
+    }
+
+    //Return True or False depending on Data
+    public boolean isData(Object productData){
+
+        if(productData == null){
+            return false;
+        }
+        return true;
+    }
+
 }
